@@ -1,8 +1,10 @@
 (function () {
 
     var nuvens = [];
+    var cactos = [];
     var pauseGame = false;
     var pontos = 0;
+    var pontuacaoMaxima = 0;
     var placar;
     var start = false
     const FPS = 300;
@@ -16,7 +18,15 @@
         deserto = new Deserto();
         dino = new Dino();
         placar =  new Placar();
-          
+        let i = 0
+        let loopCactos = setInterval(() => {
+            if (i < 1) {
+                cactos.push(new Cacto(deserto))
+            } else {
+                clearInterval(loopCactos)
+            }
+            i++
+        }, 1003)
     }
     function dayNight() {
         let diaNoite = false
@@ -70,17 +80,82 @@
         
     }
 
-    function Passarinho(){
-     this.sprites = {
-                0: { pos: '-133px' },
-                1: { pos: '-180px' }
-            
-        };
+    function Cacto(){
+        this.sprites = {
+            0: { pos: '-228px' },
+            1: { pos: '-262px' },
+            2: { pos: '-296px' },
+            3: { pos: '-332px' },
+            4: { pos: '-382px' },
+            5: { pos: '-407px' }
+        }
+
+        this.passoCacto = 2 ;
+        this.nCactos = Math.random() * 4;
+        this.element = document.createElement('div');
+        this.element.className = 'gCacto';
+        
+        this.cactos = [];
+
+        this.redefinirGrupo();
+
+        this.element.style.right = (Math.random() * window.innerWidth + 100) * -1 + 'px';
+        deserto.element.appendChild(this.element);
     }
 
+    Cacto.prototype.redefinirGrupo= function(){
+        
+            this.nCactos = Math.random() * 4
+            this.cactos.forEach((ele) => {
+                ele.remove()
+            })
+            this.cactos = []
+            for (let i = 0; i < this.nCactos; i++) {
+                let imgCacto = parseInt(Math.random() * 4)
+                let element = document.createElement('div')
+                element.className = 'cacto'
+                element.style.backgroundPositionX = this.sprites[`${imgCacto}`].pos
+    
+                if (imgCacto == 0 || imgCacto == 1 || imgCacto == 2) {
+                    element.style.height = '37px'
+                    element.style.width = '17px'
+                    element.style.top= '40px'
+                }
+    
+                this.element.appendChild(element)
+                this.cactos.push(element)
+            }
+        
+    }
+    Cacto.prototype.mover = function(){
+        if (parseInt(this.element.style.right) > window.innerWidth+50) {
+            this.element.style.right = '-500px'
+            this.redefinirGrupo()
+        }
+        this.element.style.right = parseFloat(this.element.style.right) + this.passoCacto + 'px'
+        
+        
+    }
+    function Passarinho(){
+        this.sprites = {
+                   'a0': { pos: '-133px' },
+                   'a1': { pos: '-180px' }
+               
+           };
+           this.element = document.createElement("div");
+           this.element.className = "passarinho";
+           this.element.style.backgroundPositionX = this.sprites.a0;
+           this.element.style.right = '-200px'
+           document.body.appendChild(this.element);
+   
+       }
+   
     Passarinho.prototype.show = function(){}
-
+ 
     function Placar(){
+        this.maxima = pontuacaoMaxima;
+        this.pontos = 0;
+        
         this.sprites = {
             'n0': { pos: '-484px' },
             'n1': { pos: '-495px' },
@@ -96,7 +171,7 @@
         }
         this.element =  document.createElement("div");
         this.element.className = "placar";
-        this.element.appendChild(this.element);
+       // this.element.appendChild(this.element);
         
     }
 
@@ -108,7 +183,7 @@
         }
 
         if(tempo%3000==0){
-            gameLoop = setInterval(run, 1000/(FPS/9));
+            gameLoop = setInterval(run, 1000/(FPS/10));
             console.log(gameLoop);
         }
 
@@ -121,7 +196,7 @@
 
     }
     
-
+   
     function Deserto () {
         this.element = document.createElement("div");
         this.element.className = "deserto";
@@ -173,6 +248,8 @@
             
             
         }
+            //console.log((cactos[0].element.style.right));
+        
     }
 
     function Nuvem () {
@@ -195,6 +272,10 @@
         placar.conta();
         dayNight();
        
+        cactos.forEach(function (n) {
+            n.mover();
+        });
+
 
 
         if(nuvens.length<13){

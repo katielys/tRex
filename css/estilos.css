@@ -13,6 +13,14 @@
     bottom: 0px;
 }
 
+.nuvem {
+    width: 47px;
+    height: 17px;
+    background-image: url(sprites.png);
+    background-position: -86px 2px;
+    position: absolute;
+    z-index: 1;
+}
 .dino {
     width: 45px;
     height: 46px;
@@ -22,13 +30,11 @@
     z-index: 2;
 }
 
-.nuvem {
-    width: 47px;
-    height: 17px;
+.passarinho{
+    height: 34px;
+    width: 46px;
     background-image: url(sprites.png);
-    background-position: -86px 2px;
-    position: absolute;
-    z-index: 1;
+    z-index: 3;
 }
 
 .placar {
@@ -49,17 +55,17 @@
     z-index: 100;
 }
 
-.passarinho{
-    height: 34px;
-    width: 46px;
-    background-image: url(sprites.png);
-    z-index: 7;
-}
-.cacto{
-    width: 24px;
-    height: 50px;
-    background-image: url(sprites.png);
-    background-position: 334px 21px;
+
+.gCacto {
+    bottom: 0px;
     position: absolute;
-    z-index: 4;
+    z-index: 3;
+    display: flex;
+    align-items: baseline;
+}
+
+.cacto {
+    background-image: url(sprites.png);
+    height: 47px;
+    width: 24px;
 }
