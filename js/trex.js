@@ -1,7 +1,7 @@
 (function () {
 
     var nuvens = [];
-    var pause = false
+    var pauseGame = false;
     var pontos = 0;
     var placar;
     var start = false
@@ -16,8 +16,30 @@
         deserto = new Deserto();
         dino = new Dino();
         placar =  new Placar();
-        gameLoop = setInterval(run, 1000/FPS);
-        dayNight();
+          
+    }
+    function dayNight() {
+        let diaNoite = false
+        setInterval(() => {
+            if (diaNoite) {
+                document.body.style.backgroundColor = '#000000'
+                diaNoite = false
+            } else {
+                document.body.style.backgroundColor = '#fffff'
+                diaNoite = true
+            }
+        }, 60000)
+    }
+
+    function pausa(){
+       
+        if (pauseGame == false) {
+            clearInterval(gameLoop);
+            pauseGame = true;
+        } else {
+            gameLoop = setInterval(run, 1000/FPS);
+            pauseGame = false;
+        }
     }
 
     function butoes(){
@@ -33,48 +55,29 @@
         })
         window.addEventListener('keypress', (e) => {
             if (e.key == 'p') {
-                //falta implementar
-                console.log("p");
+                pausa()
             }
         })
-    }
 
-    function dayNight(){
-        let diaNoite = false
-        setInterval(() => {
-            if (diaNoite) {
-                document.body.style.backgroundColor = '#fffff'
-                diaNoite = false
-            } else {
-                document.body.style.backgroundColor = '#00000'
-                diaNoite = true
+        window.addEventListener("keydown", function (e) {
+            if (e.key == "ArrowUp" ){
+                if(start == false){
+                    start = true
+                    gameLoop = setInterval(run, 999/FPS);
+                }
             }
-        }, 60000)
-    }
-
-  
-
-
-
-    function Cacto(){
-        this.sprites = {
-            '1':'-766px',
-            '2':'-810px',
-            '3':'-678px'
-        };
+        });
+        
     }
 
     function Passarinho(){
-
      this.sprites = {
                 0: { pos: '-133px' },
                 1: { pos: '-180px' }
             
         };
-
-
     }
-//C:\Users\Katiely\Documents\UFAM\7periodo\PW\tRex\js\trex.js
+
     Passarinho.prototype.show = function(){}
 
     function Placar(){
@@ -87,13 +90,14 @@
             'n5': { pos: '-534px' },
             'n6': { pos: '-544px' },
             'n7': { pos: '-554px' },
-            8: { pos: '-564px' },
-            9: { pos: '-574px' },
-            hi: { pos: '-584px' }
+            'n8': { pos: '-564px' },
+            'n9': { pos: '-574px' },
+            'hi': { pos: '-584px' }
         }
         this.element =  document.createElement("div");
         this.element.className = "placar";
-        document.body.appendChild(this.element);
+        this.element.appendChild(this.element);
+        
     }
 
     Placar.prototype.conta = function (){
@@ -104,12 +108,11 @@
         }
 
         if(tempo%3000==0){
-            //pontos = pontos +1;
-            gameLoop = setInterval(run, 1000/FPS) + (FPS/100);
+            gameLoop = setInterval(run, 1000/(FPS/9));
             console.log(gameLoop);
         }
 
-        this.element.style.backgroundPositionX = this.sprites.n1;
+        this.element.style.backgroundPositionX = this.sprites.n2;
     }
 
     function converteNumero(num){
@@ -176,7 +179,8 @@
         this.element = document.createElement("div");
         this.element.className = "nuvem";
         this.element.style.right = "0px";
-        this.element.style.top = Math.floor(Math.random()*120) + "px";
+        this.element.style.top = Math.floor(Math.random()*121) + "px";
+        
         deserto.element.appendChild(this.element);
     }
 
@@ -184,19 +188,39 @@
         this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
     }
 
+   
     function run () {
         dino.correr();
         deserto.mover();
         placar.conta();
-        if (Math.floor(Math.random()*1000) <= PROB_NUVEM) {
-            nuvens.push(new Nuvem());
+        dayNight();
+       
+
+
+        if(nuvens.length<13){
+            if (Math.floor(Math.random()*1040) <= PROB_NUVEM) {
+                nuvens.push(new Nuvem());
+            }
+            
+            nuvens.forEach(function (n) {
+                n.mover();
+            });
+
         }
-        nuvens.forEach(function (n) {
-            n.mover();
-        });
+
+        else{
+            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
+            nuvens.shift(); 
+            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
+            nuvens.shift();     
+        }
+
+        
+
         //Em caso de game over
         //clearInterval(gameLoop);
     }
     init();
     butoes();
+    dayNight();
 })();

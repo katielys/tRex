@@ -15,7 +15,7 @@
 
 .dino {
     width: 45px;
-    height: 45px;
+    height: 46px;
     background-image: url(sprites.png);
     background-position-y: -3px;
     position: absolute;
@@ -35,6 +35,7 @@
     display: inline-block;
     width: 9px;
     height: 15px;
+    z-index: 13;
     background-image: url(sprites.png);
 }
 
@@ -49,10 +50,16 @@
 }
 
 .passarinho{
-    
     height: 34px;
     width: 46px;
     background-image: url(sprites.png);
     z-index: 7;
 }
-
+.cacto{
+    width: 24px;
+    height: 50px;
+    background-image: url(sprites.png);
+    background-position: 334px 21px;
+    position: absolute;
+    z-index: 4;
+}
