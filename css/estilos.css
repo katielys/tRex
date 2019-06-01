@@ -30,3 +30,29 @@
     position: absolute;
     z-index: 1;
 }
+
+.placar {
+    display: inline-block;
+    width: 9px;
+    height: 15px;
+    background-image: url(sprites.png);
+}
+
+.btnRestart{
+    background-image: url(sprites.png);
+    background-position-x: -2px;
+    background-position-y: -2px;
+    height: 32px;
+    width: 36px;
+    margin-top: 15px;
+    z-index: 100;
+}
+
+.passarinho{
+    
+    height: 34px;
+    width: 46px;
+    background-image: url(sprites.png);
+    z-index: 7;
+}
+
