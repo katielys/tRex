@@ -74,7 +74,7 @@
 
 
     }
-
+//C:\Users\Katiely\Documents\UFAM\7periodo\PW\tRex\js\trex.js
     Passarinho.prototype.show = function(){}
 
     function Placar(){
