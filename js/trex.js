@@ -2,9 +2,10 @@
 
     var nuvens = [];
     var cactos = [];
+    var passarinhos = [];
     var pauseGame = false;
     var pontos = 0;
-    var pontuacaoMaxima = 0;
+    var hiPontos = 0;
     var placar;
     var start = false
     const FPS = 300;
@@ -14,10 +15,10 @@
     var dino;
     tempo = 0;
 
-    function init () {
+    function init() {
         deserto = new Deserto();
         dino = new Dino();
-        placar =  new Placar();
+        placar = new Placar();
         let i = 0
         let loopCactos = setInterval(() => {
             if (i < 1) {
@@ -27,6 +28,13 @@
             }
             i++
         }, 1003)
+
+        
+        for (let i = 0; i < 1; i++) {
+            passarinhos.push(new Passarinho());
+        }
+    
+
     }
     function dayNight() {
         let diaNoite = false
@@ -41,20 +49,22 @@
         }, 60000)
     }
 
-    function pausa(){
-       
+    function pausa() {
+
         if (pauseGame == false) {
             clearInterval(gameLoop);
+            clearInterval(passarinhos.movendo);
+            clearInterval(passarinhos.correndo);
             pauseGame = true;
         } else {
-            gameLoop = setInterval(run, 1000/FPS);
+            gameLoop = setInterval(run, 1000 / FPS);
             pauseGame = false;
         }
     }
 
-    function butoes(){
+    function butoes() {
         window.addEventListener("keydown", function (e) {
-            if (e.key == "ArrowUp" && dino.status==0) dino.status = 1;
+            if (e.key == "ArrowUp" && dino.status == 0) dino.status = 1;
         });
 
         window.addEventListener('keydown', function (e) {
@@ -70,17 +80,17 @@
         })
 
         window.addEventListener("keydown", function (e) {
-            if (e.key == "ArrowUp" ){
-                if(start == false){
+            if (e.key == "ArrowUp") {
+                if (start == false) {
                     start = true
-                    gameLoop = setInterval(run, 999/FPS);
+                    gameLoop = setInterval(run, 999 / FPS);
                 }
             }
         });
-        
+
     }
 
-    function Cacto(){
+    function Cacto() {
         this.sprites = {
             0: { pos: '-228px' },
             1: { pos: '-262px' },
@@ -90,11 +100,11 @@
             5: { pos: '-407px' }
         }
 
-        this.passoCacto = 2 ;
+        this.passoCacto = 2;
         this.nCactos = Math.random() * 4;
         this.element = document.createElement('div');
         this.element.className = 'gCacto';
-        
+
         this.cactos = [];
 
         this.redefinirGrupo();
@@ -103,101 +113,111 @@
         deserto.element.appendChild(this.element);
     }
 
-    Cacto.prototype.redefinirGrupo= function(){
-        
-            this.nCactos = Math.random() * 4
-            this.cactos.forEach((ele) => {
-                ele.remove()
-            })
-            this.cactos = []
-            for (let i = 0; i < this.nCactos; i++) {
-                let imgCacto = parseInt(Math.random() * 4)
-                let element = document.createElement('div')
-                element.className = 'cacto'
-                element.style.backgroundPositionX = this.sprites[`${imgCacto}`].pos
-    
-                if (imgCacto == 0 || imgCacto == 1 || imgCacto == 2) {
-                    element.style.height = '37px'
-                    element.style.width = '17px'
-                    element.style.top= '40px'
-                }
-    
-                this.element.appendChild(element)
-                this.cactos.push(element)
+    Cacto.prototype.redefinirGrupo = function () {
+
+        this.nCactos = Math.random() * 4
+        this.cactos.forEach((ele) => {
+            ele.remove()
+        })
+        this.cactos = []
+        for (let i = 0; i < this.nCactos; i++) {
+            let imgCacto = parseInt(Math.random() * 4)
+            let element = document.createElement('div')
+            element.className = 'cacto'
+            element.style.backgroundPositionX = this.sprites[`${imgCacto}`].pos
+
+            if (imgCacto == 0 || imgCacto == 1 || imgCacto == 2) {
+                element.style.height = '37px';
+                element.style.width = '17px';
+                element.style.top = '40px';
             }
-        
+
+            this.element.appendChild(element)
+            this.cactos.push(element)
+        }
+
     }
-    Cacto.prototype.mover = function(){
-        if (parseInt(this.element.style.right) > window.innerWidth+50) {
+    Cacto.prototype.mover = function () {
+        if (parseInt(this.element.style.right) > window.innerWidth + 50) {
             this.element.style.right = '-500px'
             this.redefinirGrupo()
         }
         this.element.style.right = parseFloat(this.element.style.right) + this.passoCacto + 'px'
-        
-        
+
+
     }
-    function Passarinho(){
+    function Passarinho() {
         this.sprites = {
-                   'a0': { pos: '-133px' },
-                   'a1': { pos: '-180px' }
-               
-           };
-           this.element = document.createElement("div");
-           this.element.className = "passarinho";
-           this.element.style.backgroundPositionX = this.sprites.a0;
-           this.element.style.right = '-200px'
-           document.body.appendChild(this.element);
-   
-       }
-   
-    Passarinho.prototype.show = function(){}
- 
-    function Placar(){
-        this.maxima = pontuacaoMaxima;
-        this.pontos = 0;
-        
-        this.sprites = {
-            'n0': { pos: '-484px' },
-            'n1': { pos: '-495px' },
-            'n2': { pos: '-504px' },
-            'n3': { pos: '-514px' },
-            'n4': { pos: '-524px' },
-            'n5': { pos: '-534px' },
-            'n6': { pos: '-544px' },
-            'n7': { pos: '-554px' },
-            'n8': { pos: '-564px' },
-            'n9': { pos: '-574px' },
-            'hi': { pos: '-584px' }
-        }
-        this.element =  document.createElement("div");
-        this.element.className = "placar";
-       // this.element.appendChild(this.element);
-        
+            0: { pos: '-133px' },
+            1: { pos: '-180px' }
+
+        };
+        this.element = document.createElement("div");
+        this.element.className = "passarinho";
+        this.element.style.backgroundPositionX = this.sprites['0'].pos;
+        this.element.style.right = '-200px'
+        this.passo = 7;
+        this.correndo = null;
+        this.movendo = null;
+        this.tick = 0;
+        document.body.appendChild(this.element);
+        this.status=0;
     }
 
-    Placar.prototype.conta = function (){
-        tempo =  tempo + 1 ;
-        if(tempo%30==0){
-            pontos = pontos +1;
-            //converteNumero(pontos);
+    Passarinho.prototype.correr = function () {
+        if (this.status == 0) {
+            this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites['0'].pos) ? this.sprites['1'].pos : this.sprites['0'].pos;
+        }
+    }
+
+    Passarinho.prototype.mover = function(){
+        this.movendo = setInterval(() => {
+           
+            if (parseInt(this.element.style.right) > window.innerWidth + 100) {
+                this.element.style.top = Math.floor(Math.random() * (deserto.element.offsetHeight - 50)) + "px";
+                this.element.style.right = "-200px"
+            }
+            if (this.tick / 10000000 == 1) {
+                this.passo += 0.5
+                this.tick = 0
+            }
+
+            this.element.style.right = (parseFloat(this.element.style.right) + this.passo) + "px"
+        }, 10000000 / FPS)
+    }
+
+    function Placar() {
+        this.sprites = {
+            0: { pos: '-484px' },
+            1: { pos: '-495px' },
+            2: { pos: '-504px' },
+            3: { pos: '-514px' },
+            4: { pos: '-524px' },
+            5: { pos: '-534px' },
+            6: { pos: '-544px' },
+            7: { pos: '-554px' },
+            8: { pos: '-564px' },
+            9: { pos: '-574px' },
+            hi: { pos: '-584px' }
+        }   
+    }
+
+  
+
+    Placar.prototype.conta = function () {
+        tempo = tempo + 1;
+        if (tempo % 30 == 0) {
+            pontos = pontos + 1;
         }
 
-        if(tempo%3000==0){
-            gameLoop = setInterval(run, 1000/(FPS/10));
+        if (tempo % 3000 == 0) {
+            gameLoop = setInterval(run, 950 / (FPS / 10));
             console.log(gameLoop);
         }
-
-        this.element.style.backgroundPositionX = this.sprites.n2;
     }
 
-    function converteNumero(num){
-        console.log(num);
-        //implementar ainda 
 
-    }
-    
-   
-    function Deserto () {
+    function Deserto() {
         this.element = document.createElement("div");
         this.element.className = "deserto";
         document.body.appendChild(this.element);
@@ -208,18 +228,18 @@
         this.element.appendChild(this.chao);
     }
 
-    Deserto.prototype.mover = function() {
+    Deserto.prototype.mover = function () {
         this.chao.style.backgroundPositionX = (parseInt(this.chao.style.backgroundPositionX) - 1) + "px";
     }
 
-    function Dino () {
+    function Dino() {
         this.sprites = {
-            'correr1':'-766px',
-            'correr2':'-810px',
-            'pulando':'-678px',
+            'correr1': '-766px',
+            'correr2': '-810px',
+            'pulando': '-678px',
             'agachando1': '-941px',
-            'agachando2':'-1000px'
-            
+            'agachando2': '-1000px'
+
         };
         this.status = 0; // 0:correndo; 1:subindo; 2: descendo; 3: agachado
         this.alturaMaxima = "80px";
@@ -228,11 +248,11 @@
         this.element.style.backgroundPositionX = this.sprites.correr1;
         this.element.style.bottom = "0px";
         deserto.element.appendChild(this.element);
-    }   
-    
+    }
+
     Dino.prototype.correr = function () {
         if (this.status == 0) {
-            this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1)?this.sprites.correr2:this.sprites.correr1;
+            this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1) ? this.sprites.correr2 : this.sprites.correr1;
         }
         else if (this.status == 1) {
             this.element.style.backgroundPositionX = this.sprites.pulando;
@@ -244,20 +264,17 @@
             if (this.element.style.bottom == "0px") this.status = 0;
         }
         else if (this.status == 3) {
-            this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachando1)?this.sprites.agachando2:this.sprites.agachando1;
-            
-            
+            this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachando1) ? this.sprites.agachando2 : this.sprites.agachando1;
+
+
         }
-            //console.log((cactos[0].element.style.right));
-        
     }
 
-    function Nuvem () {
+    function Nuvem() {
         this.element = document.createElement("div");
         this.element.className = "nuvem";
         this.element.style.right = "0px";
-        this.element.style.top = Math.floor(Math.random()*121) + "px";
-        
+        this.element.style.top = Math.floor(Math.random() * 121) + "px";
         deserto.element.appendChild(this.element);
     }
 
@@ -265,38 +282,39 @@
         this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
     }
 
-   
-    function run () {
+
+    function run() {
         dino.correr();
         deserto.mover();
         placar.conta();
         dayNight();
-       
         cactos.forEach(function (n) {
+            n.mover();
+        });
+
+        if (nuvens.length < 13) {
+            if (Math.floor(Math.random() * 1040) <= PROB_NUVEM) {
+                nuvens.push(new Nuvem());
+            }
+            nuvens.forEach(function (n) {
+                n.mover();
+            });
+        }    
+        else {
+            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
+            nuvens.shift();
+            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
+            nuvens.shift();
+        }
+
+        passarinhos.forEach(function (n) {
+           
+            n.correr();
             n.mover();
         });
 
 
 
-        if(nuvens.length<13){
-            if (Math.floor(Math.random()*1040) <= PROB_NUVEM) {
-                nuvens.push(new Nuvem());
-            }
-            
-            nuvens.forEach(function (n) {
-                n.mover();
-            });
-
-        }
-
-        else{
-            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
-            nuvens.shift(); 
-            (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
-            nuvens.shift();     
-        }
-
-        
 
         //Em caso de game over
         //clearInterval(gameLoop);

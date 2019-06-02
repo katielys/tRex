@@ -31,17 +31,28 @@
 }
 
 .passarinho{
+    position: absolute;
     height: 34px;
     width: 46px;
     background-image: url(sprites.png);
     z-index: 3;
 }
 
-.placar {
+.pontuacao {
+    position: absolute;
+    right: 15px;
+    z-index: 10;
+}
+.pontuacaoMaxima {
+    position: absolute;
+    right: 80px;
+    z-index: 10;
+}
+
+.pontos {
     display: inline-block;
     width: 9px;
     height: 15px;
-    z-index: 13;
     background-image: url(sprites.png);
 }
 
