@@ -19,21 +19,19 @@
         deserto = new Deserto();
         dino = new Dino();
         placar = new Placar();
-        let i = 0
-        let loopCactos = setInterval(() => {
-            if (i < 1) {
-                cactos.push(new Cacto(deserto))
-            } else {
-                clearInterval(loopCactos)
-            }
-            i++
-        }, 1003)
+       
 
-        
+
         for (let i = 0; i < 1; i++) {
             passarinhos.push(new Passarinho());
         }
-    
+        for (let i = 0; i < 1; i++) {
+            cactos.push(new Cacto(deserto));
+        }
+
+
+
+
 
     }
     function dayNight() {
@@ -54,7 +52,6 @@
         if (pauseGame == false) {
             clearInterval(gameLoop);
             clearInterval(passarinhos.movendo);
-            clearInterval(passarinhos.correndo);
             pauseGame = true;
         } else {
             gameLoop = setInterval(run, 1000 / FPS);
@@ -108,8 +105,7 @@
         this.cactos = [];
 
         this.redefinirGrupo();
-
-        this.element.style.right = (Math.random() * window.innerWidth + 100) * -1 + 'px';
+        this.element.style.right = (Math.random() * window.innerWidth + 200) * -1 + 'px';
         deserto.element.appendChild(this.element);
     }
 
@@ -138,7 +134,7 @@
 
     }
     Cacto.prototype.mover = function () {
-        if (parseInt(this.element.style.right) > window.innerWidth + 50) {
+        if (parseInt(this.element.style.right) > window.innerWidth + 100) {
             this.element.style.right = '-500px'
             this.redefinirGrupo()
         }
@@ -157,11 +153,10 @@
         this.element.style.backgroundPositionX = this.sprites['0'].pos;
         this.element.style.right = '-200px'
         this.passo = 7;
-        this.correndo = null;
         this.movendo = null;
         this.tick = 0;
         document.body.appendChild(this.element);
-        this.status=0;
+        this.status = 0;
     }
 
     Passarinho.prototype.correr = function () {
@@ -170,14 +165,14 @@
         }
     }
 
-    Passarinho.prototype.mover = function(){
+    Passarinho.prototype.mover = function () {
         this.movendo = setInterval(() => {
-           
+
             if (parseInt(this.element.style.right) > window.innerWidth + 100) {
                 this.element.style.top = Math.floor(Math.random() * (deserto.element.offsetHeight - 50)) + "px";
                 this.element.style.right = "-200px"
             }
-            if (this.tick / 10000000 == 1) {
+            if (this.tick / 1000000 == 1) {
                 this.passo += 0.5
                 this.tick = 0
             }
@@ -199,10 +194,10 @@
             8: { pos: '-564px' },
             9: { pos: '-574px' },
             hi: { pos: '-584px' }
-        }   
+        }
     }
 
-  
+
 
     Placar.prototype.conta = function () {
         tempo = tempo + 1;
@@ -253,7 +248,9 @@
     Dino.prototype.correr = function () {
         if (this.status == 0) {
             this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1) ? this.sprites.correr2 : this.sprites.correr1;
+            
         }
+
         else if (this.status == 1) {
             this.element.style.backgroundPositionX = this.sprites.pulando;
             this.element.style.bottom = (parseInt(this.element.style.bottom) + 1) + "px";
@@ -268,8 +265,16 @@
 
 
         }
+
+      
     }
 
+    function position(el){
+        var rect = el.getBoundingClientRect(),
+        scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return { top: rect.top + scrollTop, left: rect.left + scrollLeft}
+    }
     function Nuvem() {
         this.element = document.createElement("div");
         this.element.className = "nuvem";
@@ -281,8 +286,31 @@
     Nuvem.prototype.mover = function () {
         this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
     }
+    function gameOver(){
+        clearInterval(gameLoop)
+        clearInterval(passarinhos.movendo)
+    }
+    function colidiuC(A,B){
+        //(A.left + 28)>= (B.left ) && 
+        if(  (A.left + 28)>= (B.left ) && ( (B.top-50) <= (A.top))) {
+            console.log("AAAAA:    "+ A.top)
+            console.log("B:    "+ B.top)
+            gameOver();
+            //pausa()
+            
+        }
+    }
 
-
+    function colidiuP(A,B){
+        //(A.left + 28)>= (B.left ) && 
+        if(  (A.left + 28)>= (B.left ) && ( (B.top) <= (A.top))) {
+            console.log("AAAAA:    "+ A.top)
+            console.log("B:    "+ B.top)
+            gameOver();
+            //pausa()
+            
+        }
+    }
     function run() {
         dino.correr();
         deserto.mover();
@@ -299,7 +327,7 @@
             nuvens.forEach(function (n) {
                 n.mover();
             });
-        }    
+        }
         else {
             (nuvens[0].element).parentNode.removeChild((nuvens[0].element));
             nuvens.shift();
@@ -308,11 +336,16 @@
         }
 
         passarinhos.forEach(function (n) {
-           
             n.correr();
             n.mover();
         });
 
+        var positionDino = position(dino.element);
+        var positionCacto = position(cactos[0].element);
+        var posPassarinho = position(passarinhos[0].element);
+
+       //colidiuC(positionDino,positionCacto);
+       colidiuP(positionDino,posPassarinho);
 
 
 
