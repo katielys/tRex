@@ -187,7 +187,66 @@
             7: { pos: '-554px' },
             8: { pos: '-564px' },
             9: { pos: '-574px' },
-            hi: { pos: '-584px' }
+            max: { pos: '-584px' }
+        }
+
+        this.maxPontos = hiPontos
+        this.pontozao = document.createElement('div')
+        this.pontozao.className = 'pontuacaoMaxima'
+        if (this.maxPontos == 0) {
+            this.pontozao.style.display = 'none'
+        }
+        deserto.element.appendChild(this.pontozao)
+
+        this.element = document.createElement('div')
+        this.element.className = 'pontuacao'
+        deserto.element.appendChild(this.element)
+        this.digts = []
+        this.vMax = []
+
+        for (let i = 0; i < 6; i++) {
+            let div = document.createElement('div')
+            div.className = 'pontos'
+            div.style.backgroundPositionX = this.sprites[Object.keys(this.sprites)[i]]
+            this.element.appendChild(div)
+
+            this.digts.push(div)
+            this.digts[i].style.backgroundPositionX = this.sprites['0'].pos
+        }
+        for (let i = 0; i < 7; i++) {
+            let div = document.createElement('div')
+            div.className = 'pontos'
+            if (i == 0) {
+                div.style.backgroundPositionX = this.sprites.max.pos
+                div.style.width = '25px'
+                this.pontozao.appendChild(div)
+                this.vMax.push(div)
+            } else {
+                div.style.backgroundPositionX = this.sprites[Object.keys(this.sprites)[i]]
+                this.pontozao.appendChild(div)
+                this.vMax.push(div)
+                this.vMax[i].style.backgroundPositionX = this.sprites['0'].pos
+            }
+        }
+
+        this.displayPontos(true);
+    }
+    Placar.prototype.displayPontos = function (pontozao = false){
+        if (pontozao) {
+            let str = `${this.maxPontos}`
+
+            let j = this.vMax.length - 1
+            for (let i = str.length - 1; i > -1; i-- , j--) {
+                let num = str[i]
+                this.vMax[j].style.backgroundPositionX = this.sprites[num].pos
+            }
+        }
+        let str = `${pontos}`
+
+        let j = this.digts.length - 1
+        for (let i = str.length - 1; i > -1; i-- , j--) {
+            let num = str[i]
+            this.digts[j].style.backgroundPositionX = this.sprites[num].pos
         }
     }
 
@@ -200,7 +259,8 @@
         }
 
         if (tempo % 3000 == 0) {
-            gameLoop = setInterval(run, 950 / (FPS /20));
+
+            gameLoop = (setInterval(run, 100) * 1.01);
             console.log(gameLoop);
         }
     }
@@ -242,7 +302,7 @@
     Dino.prototype.correr = function () {
         if (this.status == 0) {
             this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.correr1) ? this.sprites.correr2 : this.sprites.correr1;
-            
+
         }
 
         else if (this.status == 1) {
@@ -256,18 +316,15 @@
         }
         else if (this.status == 3) {
             this.element.style.backgroundPositionX = (this.element.style.backgroundPositionX == this.sprites.agachando1) ? this.sprites.agachando2 : this.sprites.agachando1;
-
-
         }
 
-      
     }
 
-    function position(el){
+    function position(el) {
         var rect = el.getBoundingClientRect(),
-        scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return { top: rect.top + scrollTop, left: rect.left + scrollLeft}
+            scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
     }
     function Nuvem() {
         this.element = document.createElement("div");
@@ -281,68 +338,69 @@
         this.element.style.right = (parseInt(this.element.style.right) + 1) + "px";
     }
 
-    function restart(){
-        
+    function restart() {
+
         dGameOver.removeChild(dRestart);
         dGameOver.removeChild(dText);
         deserto.element.removeChild(dGameOver);
         deserto.element.remove()
-        if(pontos>hiPontos){
+        if (pontos > hiPontos) {
             hiPontos = pontos
         }
         pontos = 0;
-        tempo= 0;
+        tempo = 0;
         cactos.forEach(function (n) {
             (n.element).parentNode.removeChild(n.element)
-         });
- 
+        });
 
-         nuvens.forEach(function (n) {
-             (n.element).parentNode.removeChild(n.element)
-          });
- 
-          start = false
-          cactos = []
-          passarinhos= []
-          nuvens= []
+
+        nuvens.forEach(function (n) {
+            (n.element).parentNode.removeChild(n.element)
+        });
+
+        start = false
+        cactos = []
+        passarinhos = []
+        nuvens = []
         init();
     }
-    function gameOver(){
+    function gameOver() {
         clearInterval(gameLoop);
         clearInterval(passarinhos.movendo);
         passarinhos.forEach(function (n) {
             (n.element).parentNode.removeChild(n.element)
-         });
-         dGameOver=  document.createElement('div')
-         dGameOver.className = 'gameOver'
-         dRestart = document.createElement('div')
-         dRestart.className = 'btnRestart'
-         dText = document.createElement('div')
-         dText.className = 'textGameOver'
+        });
+        dGameOver = document.createElement('div')
+        dGameOver.className = 'gameOver'
+        dRestart = document.createElement('div')
+        dRestart.className = 'btnRestart'
+        dText = document.createElement('div')
+        dText.className = 'textGameOver'
 
-         dGameOver.appendChild(dText)
-         dGameOver.appendChild(dRestart)
-         dRestart.onclick = () => restart()
-         deserto.element.appendChild(dGameOver)
- 
+        dGameOver.appendChild(dText)
+        dGameOver.appendChild(dRestart)
+        dRestart.onclick = () => restart()
+        deserto.element.appendChild(dGameOver)
+
 
     }
-    function colidiuC(A,B){
+    function colidiuC(A, B) {
         //((A.left + 6)>= (B.left ) && ( (B.top+50) <= (A.top))) ||
-        if(  (A.left + 6)>= (B.left ) && ( (B.top) <= (A.top+3))    ) {
+        if ((A.left + 6) >= (B.left) && ((B.top) <= (A.top + 3))) {
             gameOver();
         }
     }
 
-    function colidiuP(A,B){
-        if(  (A.left + 20)>= (B.left ) && ( (A.top)>=(B.top-30))) {
-            gameOver();    
+    function colidiuP(A, B) {
+        if ((A.left + 20) >= (B.left) && ((A.top) >= (B.top - 30))) {
+            gameOver();
         }
     }
     function run() {
         dino.correr();
         deserto.mover();
         placar.conta();
+        placar.displayPontos();
         dayNight();
         cactos.forEach(function (n) {
             n.mover();
@@ -372,11 +430,12 @@
         var positionCacto = position(cactos[0].element);
         var posPassarinho = position(passarinhos[0].element);
 
-       colidiuC(positionDino,positionCacto);
-       colidiuP(positionDino,posPassarinho);
+        colidiuC(positionDino, positionCacto);
+        colidiuP(positionDino, posPassarinho);
 
     }
     init();
     butoes();
     dayNight();
+   
 })();
