@@ -56,6 +56,23 @@
     background-image: url(sprites.png);
 }
 
+.gameOver{
+    margin-top: 45px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10600;
+}
+
+.textGameOver{
+    background-image: url(sprites.png);
+    background-position-x: -484px;
+    background-position-y: -15px;
+    height: 11px;
+    width: 191px;
+    z-index: 60;
+}
 .btnRestart{
     background-image: url(sprites.png);
     background-position-x: -2px;
@@ -63,7 +80,7 @@
     height: 32px;
     width: 36px;
     margin-top: 15px;
-    z-index: 100;
+    z-index: 60;
 }
 
 
